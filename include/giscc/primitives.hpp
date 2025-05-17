@@ -39,11 +39,20 @@ struct Point3D
     }
 };
 
+// A single line from a to b. For multiple sgements, see PolyLine
+template <typename PointType>
+struct Line
+{
+    PointType a;
+    PointType b;
+};
+
 template <typename PointType>
 struct Polyline
 {
     std::vector<PointType> points;
 
+    // Copy constructor. Might need move?
     PolyLine(std::vector<PointType> &input) : points(input) {}
 };
 
@@ -68,5 +77,27 @@ using Geometry = std::variant<
     Point2D, Point3D,
     Polyline<Point2D>, Polyline<Point3D>,
     Polygon<Point2D>, Polygon<Point3D>>;
+
+/**
+ * The primitves preceding this comment form the core for this library's algorithms.
+ *
+ * The following code is defined here for specific algorithms.
+ * It is included here for extensibility purposes, and in case new structures end up re-using some of these.
+ */
+
+struct Triangle2D
+{
+    Point2D vertex1;
+    Point2D vertex2;
+    Point2D vertex3;
+};
+
+struct BoundingBox
+{
+    Point2D vertex1;
+    Point2D vertex2;
+    Point2D vertex3;
+    Point2D vertex4;
+};
 
 #endif // PRIMITIVES_HPP_
