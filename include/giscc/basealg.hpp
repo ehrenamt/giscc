@@ -4,8 +4,8 @@
  *
  */
 
-#ifndef BASEALG_HPP_
-#define BASEALG_HPP_
+#ifndef GISCC_BASEALG_HPP_
+#define GISCC_BASEALG_HPP_
 
 #include <cmath>
 #include <future> // for managed multithreading (std::async)
@@ -75,4 +75,4 @@ void computeBoundingBox(std::vector<PointType> points)
     return;
 }
 
-#endif // BASEALG_HPP_
+#endif // GISCC_BASEALG_HPP_

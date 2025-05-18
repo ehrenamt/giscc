@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(giscc
     src/algorithms/delauny.cpp
+    src/algorithms/idw.cpp
 )
 
 target_include_directories(giscc PUBLIC include)

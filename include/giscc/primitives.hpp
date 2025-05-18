@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef PRIMITIVES_HPP_
-#define PRIMITIVES_HPP_
+#ifndef GISCC_PRIMITIVES_HPP_
+#define GISCC_PRIMITIVES_HPP_
 
 #include <iterator>
 #include <variant>
@@ -87,17 +87,17 @@ using Geometry = std::variant<
 
 struct Triangle2D
 {
-    Point2D vertex1;
-    Point2D vertex2;
-    Point2D vertex3;
+    Point2D a;
+    Point2D b;
+    Point2D c;
 };
 
 struct BoundingBox
 {
-    Point2D vertex1;
+    Point2D a;
     Point2D vertex2;
     Point2D vertex3;
     Point2D vertex4;
 };
 
-#endif // PRIMITIVES_HPP_
+#endif // GISCC_PRIMITIVES_HPP_

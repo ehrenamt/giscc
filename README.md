@@ -4,6 +4,12 @@
 
 This is a work in progress. Please check back later as I work on, improve, and add new features!
 
+# Features
+
+Nothing is fully implemented, but I plan to add
+
+- A triangulation algorithm (for?)
+
 # Installation
 
 This is a work in progress. Please check back later as I work on, improve, and add new features!
