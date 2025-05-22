@@ -3,7 +3,7 @@
  * @brief Implementation for Delauny triangulation and its helper functions.
  *
  */
-#include <giscc/delauny.hpp>
+#include <giscc/delaunay.hpp>
 
 #include <algorithm>
 #include <cfloat>
@@ -16,11 +16,13 @@ AdjacencyList delaunyTriangulation2D(const std::vector<Point2D> &points)
 
     // edge cases
     if (points.empty())
+    {
         return adjList;
+    }
 
     if (points.size() < 3)
     {
-        return adjList;
+        throw std::invalid_argument("Cannot triangulate fewer than 3 points.");
     }
 
     if (points.size() == 3)
@@ -125,12 +127,18 @@ bool pointInTriangle(Point2D &point, Triangle2D &triangle)
     return (alpha >= 0.0) && (beta >= 0.0) && (gamma >= 0.0);
 }
 
-// TODO overload.
 bool pointInTriangle(Point2D &point, std::vector<Point2D> &triangle)
 {
     if (triangle.size() != 3)
     {
         throw std::invalid_argument("Triangle must have exactly 3 points");
     }
-    return false;
+
+    double denominator = (triangle[1].y - triangle[2].y) * (triangle[0].x - triangle[2].x) + (triangle[2].x - triangle[1].x) * (triangle[0].y - triangle[2].y);
+
+    double alpha = ((triangle[1].y - triangle[2].y) * (point.x - triangle[2].x) + (triangle[2].x - triangle[1].x) * (point.y - triangle[2].y)) / denominator;
+    double beta = ((triangle[2].y - triangle[0].y) * (point.x - triangle[2].x) + (triangle[0].x - triangle[2].x) * (point.y - triangle[2].y)) / denominator;
+    double gamma = 1.0 - alpha - beta;
+
+    return (alpha >= 0.0) && (beta >= 0.0) && (gamma >= 0.0);
 }

@@ -4,8 +4,8 @@
  *
  */
 
-#ifndef GISCC_DELAUNY_HPP_
-#define GISCC_DELAUNY_HPP_
+#ifndef GISCC_DELAUNAY_HPP_
+#define GISCC_DELAUNAY_HPP_
 
 #include <giscc/primitives.hpp>
 

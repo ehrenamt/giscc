@@ -12,7 +12,9 @@
 #ifndef GISCC_PRIMITIVES_HPP_
 #define GISCC_PRIMITIVES_HPP_
 
+#include <concepts>
 #include <iterator>
+#include <type_traits>
 #include <variant>
 #include <vector>
 
@@ -40,26 +42,26 @@ struct Point3D
 };
 
 // A single line from a to b. For multiple sgements, see PolyLine
-template <typename PointType>
+template <typename Point_T>
 struct Line
 {
-    PointType a;
-    PointType b;
+    Point_T a;
+    Point_T b;
 };
 
-template <typename PointType>
+template <typename Point_T>
 struct Polyline
 {
-    std::vector<PointType> points;
+    std::vector<Point_T> points;
 
     // Copy constructor. Might need move?
-    PolyLine(std::vector<PointType> &input) : points(input) {}
+    Polyline(const std::vector<Point_T> &input) : points(input) {}
 };
 
-template <typename PointType>
+template <typename Point_T>
 struct Polygon
 {
-    std::vector<PointType> points;
+    std::vector<Point_T> points;
 };
 
 enum class GeometryType : uint8_t
@@ -98,6 +100,23 @@ struct BoundingBox
     Point2D vertex2;
     Point2D vertex3;
     Point2D vertex4;
+};
+
+// Note that concepts are not types, but a named set of requirements
+// See https://en.cppreference.com/w/cpp/language/constraints
+template <typename V>
+concept isNumeric = std::is_arithmetic_v<V>;
+
+// equivalent to template <typename V> requires isNumeric<V>
+template <typename P, isNumeric V>
+struct AugmentedPoint
+{
+    P point;
+    V value;
+
+    AugmentedPoint(P point, V value) : point(point), value(value)
+    {
+    }
 };
 
 #endif // GISCC_PRIMITIVES_HPP_
