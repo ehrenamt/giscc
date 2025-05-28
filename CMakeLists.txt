@@ -30,7 +30,7 @@ enable_testing()
 
 add_executable(giscc_tests
     tests/test_basealg.cpp
-    tests/test_idw.cpp # placeholder
+    tests/test_idw.cpp
 )
 
 target_link_libraries(giscc_tests
