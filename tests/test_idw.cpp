@@ -1,15 +1,15 @@
 // tests/test_idw.cpp
 #include <gtest/gtest.h>
 
+#include <giscc/basealg.hpp>
 #include <giscc/idw.hpp>
 #include <giscc/primitives.hpp>
 #include <vector>
 
-TEST(InterpolationTests, IDW)
-{
-    Point2D p1 = {0, 0};
-    Point2D p2 = {3, 4};
-    Point2D p3 = {2, 2};
+TEST(InterpolationTests, IDW) {
+    Point2D p1 = {.x = 0, .y = 0};
+    Point2D p2 = {.x = 3, .y = 4};
+    Point2D p3 = {.x = 2, .y = 2};
 
     using AP = AugmentedPoint<Point2D, double>;
 
@@ -21,15 +21,18 @@ TEST(InterpolationTests, IDW)
 
     double power = 2.0;
 
-    IDWInterpolator<AP> idw(samplePoints, power);
+    auto distanceFunction = [](const Point2D& a, const Point2D& b) { return computeEuclideanDistance<Point2D>(a, b); };
 
-    Point2D testPoint1 = {5, 5};
-    Point2D testPoint2 = {10, 10};
+    IDWInterpolator<AP> idw(samplePoints, power, distanceFunction);
+
+    Point2D testPoint1 = {.x = 5, .y = 5};
+    Point2D testPoint2 = {.x = 10, .y = 10};
 
     std::vector<Point2D> testPoints = {testPoint1, testPoint2};
 
     auto results = idw.interpolate(testPoints);
 
+    // Make this a unit test. Only one ASSERT or EXPECT per test.
     ASSERT_EQ(results.size(), 2);
 
     double value1 = results[0].value;

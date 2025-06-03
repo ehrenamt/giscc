@@ -4,20 +4,30 @@
 
 > [!NOTE]
 > This is a work in progress. Please check back later as I work on, improve, and add new features!
-> 
 
 # Features
 
-Nothing is fully implemented, but I plan to add at least
+[x] A set of geospatial primitives (meant to work with these algorithms, but usage is optional)
+[x] An IDW interpolation algorithm
 
-- A set of geospatial primitives (meant to work with these algorithms, but usage is optional)
+## Planned
+
 - A Delaunay triangulation algorithm
-- An inverse-distance weighting algorithm (as well as potentially other )
-- R and R* trees
+- Additional Interpolation algorithms
+- Spatial join and overlap algorithms
+- R and R\* trees
 
 # Installation & Build
 
-This project uses features up to and including C++20.
+## Build
+
+This project uses features up to and including C++20 and uses CMake as the build system. A CMake file is included to build the library.
+
+To build, ensure your device supports `C++20` and `CMake` is installed and added to PATH. Then run
+
+```
+cmake --build build
+```
 
 # Examples
 
@@ -25,9 +35,12 @@ This is a work in progress. Please check back later as I work on, improve, and a
 
 # Tests
 
-This project depends on GoogleTest 1.17.0 (latest as of development) for testing.
+> [!NOTE]
+> This is a work in progress. The current tests are basic, incomplete, and do not cover edge cases for the completed algorithms.
 
-Tests are located in the ```/tests``` directory. To run tests, first build the project, then enter the build directory.
+This project depends on GoogleTest 1.17.0 (latest as of May 2025 development) for testing.
+
+Tests are located in the `/tests` directory. To run tests, first [build](#build) the project, then enter the build directory.
 
 ```
 cd build
