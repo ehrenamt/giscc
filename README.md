@@ -7,8 +7,8 @@
 
 # Features
 
-[x] A set of geospatial primitives (meant to work with these algorithms, but usage is optional)
-[x] An IDW interpolation algorithm
+- [x] A set of geospatial primitives (meant to work with these algorithms, but usage is optional)
+- [x] An IDW interpolation algorithm
 
 ## Planned
 
