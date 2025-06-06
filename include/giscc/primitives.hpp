@@ -71,11 +71,16 @@ struct Triangle2D {
     Point2D c;
 };
 
-struct BoundingBox {
+// for consistency, a should the top left corner of the rectangle, the rest following in clockwise order
+struct Rectangle2D {
     Point2D a;
-    Point2D vertex2;
-    Point2D vertex3;
-    Point2D vertex4;
+    Point2D b;
+    Point2D c;
+    Point2D d;
+    double max_x;
+    double min_x;
+    double max_y;
+    double min_y;
 };
 
 // Note that concepts are not types, but a named set of requirements
