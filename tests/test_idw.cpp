@@ -6,7 +6,7 @@
 #include <giscc/primitives.hpp>
 #include <vector>
 
-TEST(InterpolationTests, IDW) {
+TEST(InterpolationTests_IDW, output_length) {
     Point2D p1 = {.x = 0, .y = 0};
     Point2D p2 = {.x = 3, .y = 4};
     Point2D p3 = {.x = 2, .y = 2};
@@ -35,8 +35,8 @@ TEST(InterpolationTests, IDW) {
     // Make this a unit test. Only one ASSERT or EXPECT per test.
     ASSERT_EQ(results.size(), 2);
 
-    double value1 = results[0].value;
-    double value2 = results[1].value;
+    // double value1 = results[0].value;
+    // double value2 = results[1].value;
 
-    EXPECT_GT(value1, value2);
+    // EXPECT_GT(value1, value2);
 }

@@ -23,7 +23,15 @@
 
 This project uses features up to and including C++20 and uses CMake as the build system. A CMake file is included to build the library.
 
-To build, ensure your device supports `C++20` and `CMake` is installed and added to PATH. Then run
+To build, ensure your device supports `C++20` and `CMake` is installed and added to PATH.
+
+Configure the build directory using
+
+```
+cmake -S . -B build
+```
+
+Then run
 
 ```
 cmake --build build
