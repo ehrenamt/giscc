@@ -1,23 +1,38 @@
 # giscc - a GIS library in C++
 
-> A C++ library for geospatial data structures and algorithms, designed to work with modern C++ (up to and including the C++20 standard).
+> A C++ library for geospatial data structures and algorithms, designed to work with modern C++ (up to and including the C++20 standard), and based on Markus Schneider's algebra model for spatial data types for database systems.
 
 > [!NOTE]
-> This is a work in progress. Please check back later as I work on, improve, and add new features!
+> CURRENTLY BROKEN - DOES NOT COMPILE.
+
+> [!NOTE]
+> This is a work in progress. Please check back later as I work and improve this project!
+
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#examples">Examples</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#tests">Tests</a>
+</p>
 
 # Features
 
-- [x] A set of geospatial primitives (meant to work with these algorithms, but usage is optional)
-- [x] An IDW interpolation algorithm
-
 ## Planned
 
+- A set of geospatial primitives
+- An IDW interpolation algorithm
 - A Delaunay triangulation algorithm
 - Additional Interpolation algorithms
 - Spatial join and overlap algorithms
 - R and R\* trees
 
+# Examples
+
+Usage examples are demonstrated in the `/examples` subfolder.
+
 # Installation & Build
+
+<div id=installation>
 
 ## Build
 
@@ -36,10 +51,6 @@ Then run
 ```
 cmake --build build
 ```
-
-# Examples
-
-This is a work in progress. Please check back later as I work on, improve, and add new features!
 
 # Tests
 

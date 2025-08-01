@@ -1,5 +1,5 @@
 /**
- * @file delauny.cpp
+ * @file delaunay.cpp
  * @brief Implementation for Delauny triangulation and its helper functions.
  *
  */

@@ -1,0 +1,1 @@
+This folder contains examples demonstrating how to use this code. These examples are excluded from the compilation process.

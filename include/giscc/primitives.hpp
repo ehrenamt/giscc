@@ -3,97 +3,220 @@
  * @brief Basic (primitive) data types to use in geospatial data structures and algorithms
  *
  * This header defines basic geospatial data types.
- * The data structures and algorithms in this library are designed to use these data types.
+ * The data structures and algorithms in this library are designed to use such types.
  *
- * Structs and enums are used instead of full-on classes for performance reasons.
+ * Structs are used instead of full-on classes for performance reasons.
  *
  */
 
 #ifndef GISCC_PRIMITIVES_HPP_
 #define GISCC_PRIMITIVES_HPP_
 
+#include <any>
 #include <concepts>
 #include <iterator>
 #include <type_traits>
+#include <typeinfo>
 #include <variant>
 #include <vector>
 
-struct Point2D {
-    double x;
-    double y;
+namespace giscc {
 
-    friend bool operator==(const Point2D& lhs, const Point2D& rhs) { return lhs.x == rhs.x && lhs.y == rhs.y; }
-};
+    // Note that concepts are not types, but a named set of requirements
+    // See https://en.cppreference.com/w/cpp/language/constraints
 
-struct Point3D {
-    double x;
-    double y;
-    double z;
+    namespace space2D {
 
-    friend bool operator==(const Point3D& lhs, const Point3D& rhs) {
-        return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
+        // TODO: dot product, cross product
+        template <typename Coordinate_type = double> struct Point {
+            Coordinate_type x;
+            Coordinate_type y;
+
+            std::unordered_map<std::string, std::any> attributes;
+            std::vector<std::string> insertionOrder;
+            unsigned int unnamed_att_counter;
+
+            Point() : x(0), y(0), unnamed_att_counter(0) {}
+
+            Point(const Coordinate_type& x, const Coordinate_type& y) : x(x), y(y) {}
+
+            void swap(Point& other) {
+
+                using std::swap;
+
+                swap(x, other.x);
+                swap(y, other.y);
+            }
+
+            bool addAttribute(const std::string& attributeName, const std::any& attributeValue) {
+                if (!attribute_exists(attributeName)) {
+                    attributes.insert({attributeName, attributeValue});
+                    return true;
+                }
+
+                return false; // attribute exists
+            }
+
+            bool addAttribute(const std::any& attributeValue) {
+
+                attributes.insert({"Unnamed Attribute", attributeValue});
+                this->unnamed_att_counter++;
+                return true;
+            }
+
+            std::any getAttribute(const std::string& attributeName);
+
+            bool setAttribute(const std::string& attributeName);
+
+            // TODO: check exact attribute match
+            friend bool operator==(const Point& lhs, const Point& rhs) {
+                return lhs.x == rhs.x && lhs.y == rhs.y;
+            }
+
+            // TODO: Sum all numeric attributes. Other attributes remain the
+            // same values as of lhs
+            friend bool operator+(const Point& lhs, const Point& rhs) {
+                return Point(lhs.x + rhs.x, lhs.y + rhs.y);
+            }
+
+          private:
+            bool attribute_exists(std::string key) {
+                return (attributes.find(key) != attributes.end());
+            }
+
+            // TODO: Overload the subscript operator for manipulating attributes
+            // - but change to ordered map?
+        };
+    } // namespace space2D
+
+    namespace space3D {
+
+        // For the scope of this project, 3-dimensional shapes and polygons
+        // aren't the focus. We may add support for these later. However, this
+        // primarily concerns objects on a 2d plane. Rather than deleting the
+        // code that already supports this, I am leaving it here for now.
+        template <typename Coordinate_type = double> struct Point {
+            Coordinate_type x;
+            Coordinate_type y;
+            Coordinate_type z;
+
+            std::unordered_map<std::string, std::any> attributes;
+
+            Point() : x(0), y(0), z(0) {}
+
+            Point(const& Coordinate_type x, const& Coordinate_type y, const& Coordinate_type z) :
+                x(x), y(y), z(z) {}
+
+            void swap(Point& other) {
+
+                using std::swap;
+
+                swap(x, other.x);
+                swap(y, other.y);
+                swap(z, other.z);
+            }
+
+            friend bool operator==(const Point& lhs, const Point& rhs) {
+                return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
+            }
+
+          private:
+            bool attribute_exists(std::string key) {
+                return (attributes.find(key) != attributes.end());
+            }
+        };
+
+    } // namespace space3D
+
+    // TODO: Expand this to work on all types, not merely point
+    template <typename T> void printObjectSpace(T& object) {
+        if (typeid(T) == typeid(space2D::Point)) {
+            std::cout << "space2D"
+        } else if (typeid(T) == typeid(space3D::Point)) {
+            std::cout << "space3D"
+        } else {
+            std::cout << "Object created in custom space."
+        }
     }
-};
 
-// A single line from a to b. For multiple sgements, see PolyLine
-template <typename Point_T> struct Line {
-    Point_T a;
-    Point_T b;
-};
+    // TODO: Expand this to work on all types, not merely point
+    template <typename T> std::string getObjectSpace(T& object) {
+        if (typeid(T) == typeid(space2D::Point)) {
+            return "space2D"
+        } else if (typeid(T) == typeid(space3D::Point)) {
+            return "space3D"
+        } else {
+            return "Object created in custom space."
+        }
+    }
 
-template <typename Point_T> struct Polyline {
-    std::vector<Point_T> points;
+    // consider making this an abstract class which can be downgraded into
+    // simple segments. That would be lighter on memory, possibly.
+    template <typename Point_T> struct LineNetwork {
+        bool connected;
+        std::vector<Point_T> points;
 
-    // Copy constructor. Might need move?
-    Polyline(const std::vector<Point_T>& input) : points(input) {}
-};
+        // using an adjacency list because we expect the networks to be sparse.
+        std::unordered_map<Point_T, std::vector<Point_T>> adjacency_list;
 
-template <typename Point_T> struct Polygon {
-    std::vector<Point_T> points;
-};
+        LineNetwork(const std::vector<Point_T>& points,
+                    std::unordered_map<Point_T, std::vector<Point_T>> adjacency_list;) {
 
-enum class GeometryType : uint8_t { Point2D, Point3D, Polyline2D, Polyline3D, Polygon2D, Polygon3D };
+            this.connected = false;
+            // TODO: connected check
 
-// resolves to a type and can be used as a template during runtime
-using Geometry =
-    std::variant<Point2D, Point3D, Polyline<Point2D>, Polyline<Point3D>, Polygon<Point2D>, Polygon<Point3D>>;
+            this.points = std::sort(points.begin(), points.end());
 
-/**
- * The primitves preceding this comment form the core for this library's algorithms.
- *
- * The following code is defined here for specific algorithms.
- * It is included here for extensibility purposes, and in case new structures end up re-using some of these.
- */
+            this.adjacency_list = adjacency_list;
+        }
 
-struct Triangle2D {
-    Point2D a;
-    Point2D b;
-    Point2D c;
-};
+        bool add_segment(const std::pair<Point_T, PointT>& new_line_segment) {
 
-// for consistency, a should the top left corner of the rectangle, the rest following in clockwise order
-struct Rectangle2D {
-    Point2D a;
-    Point2D b;
-    Point2D c;
-    Point2D d;
-    double max_x;
-    double min_x;
-    double max_y;
-    double min_y;
-};
+            // ensure the first value in the pair to be the key, otherwise it
+            // does not work
+            auto key = new_line_segment.first;
+            auto value = new_line_segment.second;
 
-// Note that concepts are not types, but a named set of requirements
-// See https://en.cppreference.com/w/cpp/language/constraints
-template <typename V>
-concept isNumeric = std::is_arithmetic_v<V>;
+            auto it = this.adjacency_list.find(key);
 
-// equivalent to template <typename V> requires isNumeric<V>
-template <typename P, isNumeric V> struct AugmentedPoint {
-    P point;
-    V value;
+            // key exists
+            if (it != my_dict.end()) {
+                it->second = it->second.push_back(value);
 
-    AugmentedPoint(P point, V value) : point(point), value(value) {}
-};
+                //
+            }
+
+            return false;
+        }
+
+        // bool strongly_connected_check(const std::unordered_map<Point_T,
+        // std::vector<Point_T>>& adjacency_list;) {
+        //     std::vector<Point_T> visted;
+        //     for (auto& [key, value] : adjacency_list) {
+        //         if (value.size() <= 0) {
+        //             return false;
+        //         }
+        //     }
+        // }
+    };
+
+    // TODO: Support complex Polygons (holes, concave, segments)
+    // Best way to do this is likely, as above, to create this as a parent "region" class followed
+    // by specialized sub classes (2d / 3d triangle, rectangle or bounding region, buffer) for
+    // specialized algorithms. Using the parent class alone might be too costly.
+    template <typename Point_T> struct Polygon {
+        std::vector<Point_T> points;
+    };
+
+    /**
+     * The primitves preceding this comment form the core for this library's
+     * algorithms.
+     *
+     * The following code is defined here for specific algorithms.
+     * It is included here for extensibility purposes, and in case new
+     * structures end up re-using some of these.
+     */
+
+} // namespace giscc
 
 #endif // GISCC_PRIMITIVES_HPP_
