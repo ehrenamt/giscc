@@ -1,3 +1,7 @@
+# Some style rules:
+# variables: snake_case
+# types: Capitalized_type
+
 IndentWidth: 4
 ColumnLimit: 100
 AlignAfterOpenBracket: Align
@@ -11,3 +15,7 @@ BreakBeforeBraces: Custom
 NamespaceIndentation: All
 BinPackParameters: false
 BreakBeforeTernaryOperators: true
+SeparateDefinitionBlocks: Always
+MaxEmptyLinesToKeep: 2
+AllowShortIfStatementsOnASingleLine: Never # for easier debugging
+AllowShortLoopsOnASingleLine: false # for easier debugging

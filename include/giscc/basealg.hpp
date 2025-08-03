@@ -26,65 +26,75 @@
  */
 template <typename> inline constexpr bool always_false = false;
 
-// Works if values are known at compile time.
-// Use std::visit later for runtime polymorphism
-template <typename PointType> double computeEuclideanDistance(const PointType& p1, const PointType& p2) {
+namespace giscc {
 
-    if constexpr (std::is_same_v<PointType, Point2D>) {
-        double diff_x = p1.x - p2.x;
-        double diff_y = p1.y - p2.y;
-        return std::sqrt(diff_x * diff_x + diff_y * diff_y);
+    namespace space2D {
 
-    } else if constexpr (std::is_same<PointType, Point3D>) {
-        double diff_x = p1.x - p2.x;
-        double diff_y = p1.y - p2.y;
-        double diff_z = p1.z - p2.z;
+        // Works if values are known at compile time.
+        // Use std::visit later for runtime polymorphism
+        template <typename Coord_type>
+        double computeEuclideanDistance(const Point<Coord_type>& p1, const Point<Coord_type> p2) {
 
-        return std::sqrt(diff_x * diff_x + diff_y * diff_y + diff_z * diff_z);
+            Coord_type diff_x = p1.x - p2.x;
+            Coord_type diff_y = p1.y - p2.y;
 
-    } else {
-        static_assert(always_false<PointType>, "Unsupported type passed into function.");
-    }
-}
+            // if constexpr (std::is_same_v<PointType, Point2D>) {
+            //     double diff_x = p1.x - p2.x;
+            //     double diff_y = p1.y - p2.y;
+            //     return std::sqrt(diff_x * diff_x + diff_y * diff_y);
 
-// Computes a convex hull of a vector of Point2D
-// TODO: Template this to work on 3D - or define a complex polyhedron.
-// Also, make recursive calls to recursive version, one minmax calculated.
+            // runtime check for invalid points / coordinates. Remove later.
+            // else {
+            //     static_assert(always_false<PointType>, "Unsupported type passed into function.");
+            // }
 
-template <typename PointType> void computeConvexHull(std::vector<PointType> points) {
-    // QuickHull algorithm
+            return std::sqrt(diff_x * diff_x + diff_y * diff_y);
+        }
 
-    // sort points by? min_x and max_x
-    auto minmax = std::minmax_element(points.begin(), points.end(),
-                                      [](const PointType& a, const PointType& b) { return a.x < b.x; });
+        // normalized is not a true minimum bounding rectangle, which may be at an angle not
+        // parallel to the coordinate axes. Instead, it returns the bounding box which is normalized
+        // to the axes
 
-    PointType min_x = *minmax.first;
-    return;
-}
+        // TODO: Return a polygon object
+        // This needs to work for points, lines, polygons, and a collection of all.
+        template <typename Geometry_type>
+        void computeNormalizedBoundingBox(std::vector<Geometry_type> points) {
+            return;
+        }
 
-// TODO: Template this to work on 3D - basically, return a 2d or 3d bouding
-// space. May need to use a std::variant return type.
-template <typename PointType> void computeBoundingBox(std::vector<PointType> points) {
-    return;
-}
+        // Computes a convex hull of a vector of Point2D
+        // TODO: Template this to work on 3D - or define a complex polyhedron.
+        // PRIO: Lowest
+        // Also, make recursive calls to recursive version, one minmax calculated.
 
-template <typename Point_T, typename Value_T>
-Value_T sum_augmented_values(const std::vector<AugmentedPoint<Point_T, Value_T>>& augmentedPoints) {
-    Value_T sum = Value_T{};
+        template <typename PointType> void computeConvexHull(std::vector<PointType> points) {
+            // QuickHull algorithm
 
-    for (const auto& p : augmentedPoints) {
-        sum += p.value;
-    }
+            // sort points by? min_x and max_x
+            auto minmax = std::minmax_element(
+                points.begin(), points.end(),
+                [](const PointType& a, const PointType& b) { return a.x < b.x; });
 
-    return sum;
-}
+            PointType min_x = *minmax.first;
+            return;
+        }
 
-// Following functions are not templated, so their implementation is separate
+    } // namespace space2D
 
-// TODO Third overload to apply this to a vector of an geometry type.
-// This means geometry types each need their own means of calculating a bounding box.
-Rectangle2D minimumBoundingRectangle(const std::vector<Point2D>& points);
+    // TODO: Once space2D algorithms completed, replicate to space3D
+    namespace space3D {
+        template <typename Coord_type>
+        double computeEuclideanDistance(const Point<Coord_type>& p1, const Point<Coord_type> p2) {
 
-Rectangle2D minimumBoundingRectangle(const std::vector<Rectangle2D>& rectangles);
+            Coord_type diff_x = p1.x - p2.x;
+            Coord_type diff_y = p1.y - p2.y;
+            Coord_type diff_z = p1.z - p2.z;
+
+            return std::sqrt(diff_x * diff_x + diff_y * diff_y + diff_z * diff_z);
+        };
+    } // namespace space3D
+
+} // namespace giscc
+
 
 #endif // GISCC_BASEALG_HPP_
